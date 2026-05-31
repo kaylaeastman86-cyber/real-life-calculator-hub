@@ -5,9 +5,9 @@ import { CalculatorTool } from "@/components/CalculatorTool";
 import { calculators, getCalculatorBySlug } from "@/lib/calculators";
 
 type CalculatorPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 export function generateStaticParams() {
@@ -16,8 +16,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: CalculatorPageProps): Metadata {
-  const calculator = getCalculatorBySlug(params.slug);
+export async function generateMetadata({ params }: CalculatorPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const calculator = getCalculatorBySlug(slug);
 
   if (!calculator) {
     return {
@@ -31,8 +32,9 @@ export function generateMetadata({ params }: CalculatorPageProps): Metadata {
   };
 }
 
-export default function CalculatorPage({ params }: CalculatorPageProps) {
-  const calculator = getCalculatorBySlug(params.slug);
+export default async function CalculatorPage({ params }: CalculatorPageProps) {
+  const { slug } = await params;
+  const calculator = getCalculatorBySlug(slug);
 
   if (!calculator) {
     notFound();
